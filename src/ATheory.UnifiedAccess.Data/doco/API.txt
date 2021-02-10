@@ -1,9 +1,3 @@
-﻿Library Name: ATheory.<Project>.<Sub*>
-            : ATheory stands for Arish-Ahnaf-Alam Theory
-            : ATheory.UnifiedAccess.Data
-Class Prefix: ATrine (means three, its for the Three As): 
-    Use this suffix where the name conflicts with the dependent framework class name
-
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 One single set of APIs for the supported {SqlServer, SqlLite, Cosmos, Mongo, MySql(not tested)} drivers/libraries.
