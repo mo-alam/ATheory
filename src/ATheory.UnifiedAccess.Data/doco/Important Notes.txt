@@ -1,0 +1,13 @@
+﻿Memory footprint:
+===================================================================================================================
+	1. Reduce using static objects/list/data. If need arises in regards to performance, consider providing options 
+		to opt out of the cache.
+
+
+Features:
+===================================================================================================================
+	1. Provide method to create schema(table/document) based on the Entity
+	2. Provide method to modify schema(table/document) based on the Entity (if the underlying source supports it)
+	3. Provide method to delete schema(table/document) based on the Entity
+	4. Implement Bridge/tunnel interface to pull-push data from one provider to another
+	5. For Dynamodb implement the FilterExpression

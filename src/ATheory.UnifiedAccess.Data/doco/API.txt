@@ -1,0 +1,60 @@
+﻿Library Name: ATheory.<Project>.<Sub*>
+            : ATheory stands for Arish-Ahnaf-Alam Theory
+            : ATheory.UnifiedAccess.Data
+Class Prefix: ATrine (means three, its for the Three As): 
+    Use this suffix where the name conflicts with the dependent framework class name
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+One single set of APIs for the supported {SqlServer, SqlLite, Cosmos, Mongo, MySql(not tested)} drivers/libraries.
+==============================================================================================================
+
+Core Interfaces for CRUD
+--------------------------------------------------------------------------------------------------------------
+1. IReadQuery<TSource> interface exposes all the read operation related functions through extension.
+2. IWriteQuery<TSource> interface exposes all the write operation related functions through extension.
+3. ISqlQuery interface exposes functions related to raw sql query through extension.
+4. IMasterDetailQuery<TSource> interface exposes all the master-detail related functions through extension.
+
+How to:
+--------------------------------------------------------------------------------------------------------------
+>>	The main entry is a static container class named: EntityUnifier. This class is used to register the 
+	Sql/No-Sql database and the entities. The container exposes fluent interface to register various
+    database, entities, etc.
+
+    # Setting up a SQL server context and register two entities:
+
+	    EntityUnifier.Factory()
+            /* Use defualt context */
+            .UseDefaultContext(ArnsConnection.CreateSqlServer(
+                "[Server Name]\\[Instance]", 
+                "[Database Name]", 
+                "[User Name]", 
+                "[Password]"))
+            .Register<Author>()
+            .Register<Books>(b => b.Id); // With keys
+
+        /* That's it, no need to create a context, have entity properties, etc.. its ready to be consumed */
+        /* And its same for all other supported dbs as well */
+
+    # Read : fetch IReadQuery<TSource> 
+        /* Get for Author */
+        var authorQuery = EntityUnifier.Factory().GetQueryService<IReadQuery<Author>>();
+        var result = authorQuery.GetFirst(a => a.Index > 2);
+        /* Done:  And its same for all the supported types */
+
+    # Write : fetch IWriteQuery<TSource> 
+        /* Get for Author */
+        var authorQuery = EntityUnifier.Factory().GetQueryService<IWriteQuery<Author>>();
+        var result = authorQuery.Insert(new Author { Name = "Isaac Asimov", Description = "Sci-fi", Index = 99 });
+        /* Done:  And its same for all the supported types */
+
+    # Raw SQL : fetch ISqlQuery 
+        /* Get for Author */
+        var authorQuery = EntityUnifier.Factory().GetQueryService<ISqlQuery>();
+        var result = authorQuery.GetFirst<AuthorDto>("select Id, name from author where Id > 5");
+        result = authorQuery.Execute("insert into author (name, description) values (@name, @description)", SqlHelper.Parameters.Get("@name","Isaac"), SqlHelper.Parameters.Get("@description", "sci-fi"));
+        /* Done:  And its same for all the supported types that support SQL */
+
+==============================================================================================================
+Please look at the unit tests.
