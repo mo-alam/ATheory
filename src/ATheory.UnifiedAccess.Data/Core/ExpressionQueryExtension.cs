@@ -62,12 +62,14 @@ namespace ATheory.UnifiedAccess.Data.Core
         #endregion
 
         #region Public extension method (Read)
-
+        
         /// <summary>
-        /// Use it to pass any expression that is exposed by IQueryable<T>
+        /// Use it to pass any expression that is exposed by IQueryable
         /// </summary>
+        /// <typeparam name="TSource">Type of the source object</typeparam>
         /// <typeparam name="TResult">Type of the returned result</typeparam>
-        /// <param name="queryableFunc">Function to be called from the IQueryable</param>
+        /// <param name="_">Caller</param>
+        /// <param name="func">Function to be called from the IQueryable</param>
         /// <returns>Result of type TResult</returns>
         public static  TResult ExecQueryable<TSource, TResult>(
             this IReadQuery<TSource> _,
