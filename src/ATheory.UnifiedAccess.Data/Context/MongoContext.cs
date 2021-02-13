@@ -89,6 +89,21 @@ namespace ATheory.UnifiedAccess.Data.Context
         public bool InsertBulk<TEntity>(IList<TEntity> entities) where TEntity : class =>
             Exec<TEntity, bool>(c => { c.InsertMany(entities); return true; });
 
+        public bool CreateSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Implement interface ISingleLife

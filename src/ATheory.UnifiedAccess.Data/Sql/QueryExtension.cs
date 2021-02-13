@@ -75,7 +75,7 @@ namespace ATheory.UnifiedAccess.Data.Sql
             try
             {
                 using var _context = GetContext();
-                var dependencies = _context.GetFacadeDependencies();
+                var dependencies = _context.GetRDFDependencies();
                 using var critial = dependencies.CriticalSection;
                 if (modification == SqlModification.Top || modification == SqlModification.Bottom)
                 {

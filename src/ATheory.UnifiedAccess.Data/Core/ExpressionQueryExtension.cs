@@ -7,7 +7,6 @@ using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 using static ATheory.UnifiedAccess.Data.Infrastructure.EntityUnifier;
 
 namespace ATheory.UnifiedAccess.Data.Core
@@ -16,7 +15,7 @@ namespace ATheory.UnifiedAccess.Data.Core
     /// An extension for expression queries. Any class can inherit IQueryExecutor<TSource>
     /// and get all the functions exposed by this extension class.
     /// </summary>
-    public static  class ExpressionQueryExtension
+    public static partial class ExpressionQueryExtension
     {
         #region Private methods        
 
@@ -38,7 +37,7 @@ namespace ATheory.UnifiedAccess.Data.Core
 
         static TResult Get<TSource, TResult>(
             Func<IQueryable<TSource>, TResult> func)
-            where TSource: class, new()
+            where TSource : class, new()
         {
             Error.Clear();
             try
@@ -56,13 +55,13 @@ namespace ATheory.UnifiedAccess.Data.Core
         static IQueryable<TSource> PredicateIf<TSource>(
             IQueryable<TSource> source,
             Expression<Func<TSource, bool>> predicate)
-            where TSource : class, new() => 
+            where TSource : class, new() =>
             predicate == null ? source : source.Where(predicate);
 
         #endregion
 
         #region Public extension method (Read)
-        
+
         /// <summary>
         /// Use it to pass any expression that is exposed by IQueryable
         /// </summary>
@@ -71,10 +70,10 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="_">Caller</param>
         /// <param name="func">Function to be called from the IQueryable</param>
         /// <returns>Result of type TResult</returns>
-        public static  TResult ExecQueryable<TSource, TResult>(
+        public static TResult ExecQueryable<TSource, TResult>(
             this IReadQuery<TSource> _,
             Func<IQueryable<TSource>, TResult> func)
-            where TSource : class, new() => 
+            where TSource : class, new() =>
             Get(func);
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         public static TSource GetFirst<TSource>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate)
-            where TSource : class, new() => 
+            where TSource : class, new() =>
             Get<TSource, TSource>(a => a.FirstOrDefault(predicate));
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <returns>TSelect instance</returns>
-        public static  TSelect GetFirst<TSource, TSelect>(
+        public static TSelect GetFirst<TSource, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate,
             Expression<Func<TSource, TSelect>> selector)
@@ -107,7 +106,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// </summary>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>Entity</returns>
-        public static  TSource GetLast<TSource>(
+        public static TSource GetLast<TSource>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate)
             where TSource : class, new() =>
@@ -119,7 +118,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <returns>TSelect instance</returns>
-        public static  TSelect GetLast<TSource, TSelect>(
+        public static TSelect GetLast<TSource, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate,
             Expression<Func<TSource, TSelect>> selector)
@@ -133,7 +132,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <param name="keySelector">A function for a property to order by</param>
         /// <returns>Entity</returns>
-        public static  TSource GetTop<TSource, TKey>(
+        public static TSource GetTop<TSource, TKey>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate,
             Expression<Func<TSource, TKey>> keySelector)
@@ -148,7 +147,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="keySelector">A function for a property to order by</param>
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <returns>Entity</returns>
-        public static  TSelect GetTop<TSource, TKey, TSelect>(
+        public static TSelect GetTop<TSource, TKey, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate,
             Expression<Func<TSource, TKey>> keySelector,
@@ -178,7 +177,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="keySelector">A function for a property to order by</param>
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <returns>Entity</returns>
-        public static  TSelect GetBottom<TSource, TKey, TSelect>(
+        public static TSelect GetBottom<TSource, TKey, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate,
             Expression<Func<TSource, TKey>> keySelector,
@@ -191,7 +190,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// </summary>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSource> GetList<TSource>(
+        public static IList<TSource> GetList<TSource>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, bool>> predicate = null)
             where TSource : class, new() =>
@@ -203,7 +202,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSelect> GetList<TSource, TSelect>(
+        public static IList<TSelect> GetList<TSource, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, TSelect>> selector,
             Expression<Func<TSource, bool>> predicate = null)
@@ -217,7 +216,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="keySelector">A function for a property to order by</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSource> GetOrderedList<TSource, TKey>(
+        public static IList<TSource> GetOrderedList<TSource, TKey>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, TKey>> keySelector,
             Expression<Func<TSource, bool>> predicate = null)
@@ -232,7 +231,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSelect> GetOrderedList<TSource, TKey, TSelect>(
+        public static IList<TSelect> GetOrderedList<TSource, TKey, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, TKey>> keySelector,
             Expression<Func<TSource, TSelect>> selector,
@@ -247,7 +246,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="keySelector">A function for a property to order by</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSource> GetDescendingOrderedList<TSource, TKey>(
+        public static IList<TSource> GetDescendingOrderedList<TSource, TKey>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, TKey>> keySelector,
             Expression<Func<TSource, bool>> predicate = null)
@@ -262,7 +261,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSelect> GetDescendingOrderedList<TSource, TKey, TSelect>(
+        public static IList<TSelect> GetDescendingOrderedList<TSource, TKey, TSelect>(
             this IReadQuery<TSource> _,
             Expression<Func<TSource, TKey>> keySelector,
             Expression<Func<TSource, TSelect>> selector,
@@ -276,7 +275,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="range">Range: from = 0 based element in the sequence; count = total number of elements</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSource> GetRange<TSource>(
+        public static IList<TSource> GetRange<TSource>(
             this IReadQuery<TSource> _,
             (int from, int count) range,
             Expression<Func<TSource, bool>> predicate = null)
@@ -290,7 +289,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSelect> GetRange<TSource, TSelect>(
+        public static IList<TSelect> GetRange<TSource, TSelect>(
             this IReadQuery<TSource> _,
             (int from, int count) range,
             Expression<Func<TSource, TSelect>> selector,
@@ -305,7 +304,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="keySelector">A function for a property to order by</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSource> GetRangeOrderBy<TSource, TKey>(
+        public static IList<TSource> GetRangeOrderBy<TSource, TKey>(
             this IReadQuery<TSource> _,
             (int from, int count) range,
             Expression<Func<TSource, TKey>> keySelector,
@@ -321,7 +320,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="selector">A function to copy TSource elements to TSelect element</param>
         /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
         /// <returns>List of TSource elements</returns>
-        public static  IList<TSelect> GetRangeOrderBy<TSource, TKey, TSelect>(
+        public static IList<TSelect> GetRangeOrderBy<TSource, TKey, TSelect>(
             this IReadQuery<TSource> _,
             (int from, int count) range,
             Expression<Func<TSource, TKey>> keySelector,
@@ -340,26 +339,26 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <param name="entity">Entity to be pushed in to the database</param>
         /// <returns>Success or failure</returns>
         public static bool Insert<TSource>(
-            this IWriteQuery<TSource> _, 
-            TSource entity) 
-            where TSource : class, new() => 
+            this IWriteQuery<TSource> _,
+            TSource entity)
+            where TSource : class, new() =>
             Exec(c => c.Insert(entity));
 
         /// <summary>
         /// Updates the entity, affects only the columns if specified in properties otherwise all. Not to be used for MongoDB
         /// </summary>
         /// <param name="entity">Entity to be updated.</param>
-        /// <param name="properties">Array of properties that would be updated, if nnone if provided the whole entity will be updated</param>
+        /// <param name="properties">Array of properties that would be updated, if none is provided the whole entity will be updated</param>
         /// <returns>Success or failure</returns>
         public static bool Update<TSource>(
             this IWriteQuery<TSource> _,
             TSource entity,
-            params Expression<Func<TSource, object>>[] properties) 
+            params Expression<Func<TSource, object>>[] properties)
             where TSource : class, new() =>
             Exec(c => c.Update(entity, properties));
 
         /// <summary>
-        /// Updates the entity, affects only the columns if specified in properties otherwise all. Not to be used for MongoDB
+        /// Updates the entity. Not to be used for MongoDB
         /// </summary>
         /// <param name="predicate">A function for a condition to update elements.</param>
         /// <param name="entity">Entity to be updated</param>
@@ -392,35 +391,17 @@ namespace ATheory.UnifiedAccess.Data.Core
             Expression<Func<TSource, bool>> predicate)
             where TSource : class, new() =>
             Exec(c => c.Delete(predicate));
-        
+
         /// <summary>
         /// Inserts in bulk, the entire data table
         /// </summary>
         /// <param name="list">List of TSource elements that'll be inserted in to the table</param>
         /// <returns>Success or failure</returns>
         public static bool InsertBulk<TSource>(
-            this IWriteQuery<TSource> _, 
+            this IWriteQuery<TSource> _,
             IList<TSource> sources)
-            where TSource : class, new() => 
-            Exec(c => c.InsertBulk(sources));
-
-        #endregion
-
-        #region Master-Detail
-
-        /// <summary>
-        /// Filters a sequence of TSource elements based on the predicate if one is provided, otherwise all; in a Master-Detail relationship
-        /// </summary>
-        /// <typeparam name="TDetailEntity">Detail source type</typeparam>
-        /// <param name="child">Expression for the child property. (s => s.Detail)</param>
-        /// <param name="predicate">A function for a condition to filter elements. (s => s.Id) </param>
-        /// <returns>List of TSource elements</returns>
-        public static IList<TSource> GetListWithDetail<TSource, TDetailEntity>(
-            this IMasterDetailQuery<TSource> _,
-            Expression<Func<TSource, ICollection<TDetailEntity>>> detail,
-            Expression<Func<TSource, bool>> predicate = null)
             where TSource : class, new() =>
-            Get<TSource, IList<TSource>>(c => PredicateIf(c, predicate).Include(detail).ToList());
+            Exec(c => c.InsertBulk(sources));
 
         #endregion
     }

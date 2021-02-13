@@ -37,7 +37,7 @@ namespace ATheory.UnifiedAccess.Data.Context
         
         #endregion
 
-        #region Protected members
+        #region Protected methods
 
         protected virtual bool ExecFunction(Func<bool> func)
         {
@@ -60,6 +60,8 @@ namespace ATheory.UnifiedAccess.Data.Context
             if (args.keyStore.Keys != null)
                 typeBuilder.HasKey(args.keyStore.Keys);
         }
+
+        protected virtual bool CreateEntitySchema<TEntity>() => true;
 
         #endregion
 
@@ -154,7 +156,19 @@ namespace ATheory.UnifiedAccess.Data.Context
 
             return InsertBulk(dataTable);
         }
-        
+
+        public bool CreateSchema<TEntity>() where TEntity : class
+            => CreateEntitySchema<TEntity>();
+
+        public bool UpdateSchema<TEntity>() where TEntity : class {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Public members (class implementation)

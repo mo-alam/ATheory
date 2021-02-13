@@ -9,10 +9,10 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
         public void GetFirst_not_null_value_match()
         {
             var query = Prepare.GetQuery();
-            var result = query.GetFirst(a => a.Id > 0);
+            var result = query.GetFirst(a => a.Id == 88);
             
             Assert.NotNull(result);
-            Assert.Equal(1, result.Id);
+            Assert.Equal(88, result.Id);
         }
         
         [Fact]

@@ -6,6 +6,8 @@ using ATheory.UnifiedAccess.Data.Infrastructure;
 using ATheory.Util.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ATheory.UnifiedAccess.Data.Internal;
+using static ATheory.UnifiedAccess.Data.Infrastructure.EntityUnifier;
 
 namespace ATheory.UnifiedAccess.Data.Context
 {
@@ -14,9 +16,14 @@ namespace ATheory.UnifiedAccess.Data.Context
     /// </summary>
     public class CosmosContext : UnifiedContext
     {
+        #region Constructor
         public CosmosContext(Connection conn) : base(conn)
         {
         }
+
+        #endregion
+
+        #region Overriden methods
 
         protected override void RegisterEntity(
             EntityTypeBuilder typeBuilder,
@@ -41,5 +48,18 @@ namespace ATheory.UnifiedAccess.Data.Context
                 }
             }
         }
+
+        protected override bool CreateEntitySchema<TEntity>()
+        {
+            if (!GetRegisteredTypes().ContainsKey(typeof(TEntity))) return false;
+            var store = GetRegisteredTypes()[typeof(TEntity)];
+
+            var dependencies = this.GetDbFacadeDependencies();
+            return dependencies.CreateCosmosContainerIfNotExists(
+                store.container, 
+                store.Item2.GetFirstSpecialKey(TypeCatalogue.SpecialKey.PartitionKey));
+        }
+
+        #endregion
     }
 }

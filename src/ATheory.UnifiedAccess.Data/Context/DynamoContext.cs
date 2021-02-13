@@ -116,6 +116,21 @@ namespace ATheory.UnifiedAccess.Data.Context
         // Infrastructure implementation; nothing to dispose
         public void Dispose() { }
 
+        public bool CreateSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteSchema<TEntity>() where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Async methods (using the context)

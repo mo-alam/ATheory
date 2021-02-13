@@ -11,4 +11,12 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
         public int Index { get; set; }
         public string id { get; set; }  /* internal property */
     }
+
+    public class Book
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string PartitionKey { get; set; }
+        public string id { get; set; }  /* internal property */
+    }
 }

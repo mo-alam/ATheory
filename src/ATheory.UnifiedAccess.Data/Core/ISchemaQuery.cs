@@ -5,9 +5,11 @@
 namespace ATheory.UnifiedAccess.Data.Core
 {
     /// <summary>
-    /// Base interface as Constraint
+    /// Interface to access functions related to data fetch
     /// </summary>
-    public interface IQueryService
+    /// <typeparam name="TSource">Type of Model</typeparam>
+    public interface ISchemaQuery<TSource> : IQueryService
+        where TSource : class, new()
     { 
     }
 }

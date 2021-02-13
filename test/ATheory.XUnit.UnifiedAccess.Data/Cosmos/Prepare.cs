@@ -15,6 +15,8 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
             EntityUnifier.Factory()
                 .UseDefaultContext(Connection.CreateCosmos(config.Key1, config.Key2, "BookDB"))
                 .Register<Author>("Author", o => o.Id)
+                .SpecialKey("PartitionKey", TypeCatalogue.SpecialKey.PartitionKey)
+                .Register<Book>("Books", o => o.Id)
                 .SpecialKey("PartitionKey", TypeCatalogue.SpecialKey.PartitionKey);
             _preped = true;
         }
@@ -22,5 +24,6 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
         public static IReadQuery<Author> GetQuery() => EntityUnifier.Factory().GetQueryService<IReadQuery<Author>>();
         public static IWriteQuery<Author> SetQuery() => EntityUnifier.Factory().GetQueryService<IWriteQuery<Author>>();
         public static ISqlQuery SqlQuery() => EntityUnifier.Factory().GetQueryService<ISqlQuery>();
+        public static ISchemaQuery<Book> SchemaQuery() => EntityUnifier.Factory().GetQueryService<ISchemaQuery<Book>>();
     }
 }

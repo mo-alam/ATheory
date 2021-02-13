@@ -25,7 +25,7 @@ namespace ATheory.UnifiedAccess.Data.Internal
         internal static DbContext ToEECore(this IUnifiedContext _) => (UnifiedContext)_;
         internal static UnifiedContext ToCore(this IUnifiedContext _) => (UnifiedContext)_;
         internal static DatabaseFacade GetDbFacade(this IUnifiedContext _) => ((UnifiedContext)_).Database;
-        internal static IATrineRDFDependencies GetFacadeDependencies(this IUnifiedContext _)
+        internal static IATrineRDFDependencies GetRDFDependencies(this IUnifiedContext _)
         {
             var instance = InvokeMethod<IRelationalDatabaseFacadeDependencies>(
                   typeof(RelationalDatabaseFacadeExtensions),
@@ -50,6 +50,9 @@ namespace ATheory.UnifiedAccess.Data.Internal
                 );
         }
 
+        internal static IATrineDbFacadeDependencies GetDbFacadeDependencies(this IUnifiedContext _)
+            => new ATrineDbFacadeDependencies(((UnifiedContext)_).GetService<IDatabaseFacadeDependencies>());
+        
         #endregion
     }
 }

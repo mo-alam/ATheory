@@ -181,6 +181,11 @@ namespace ATheory.Util.Reflect
             .Select(m => m.Name)
             .ToHashSet();
 
+        public static T GetMemberVariable<T>(object instance, string varName) where T : class => instance
+            .GetType()
+            .GetField(varName, AllBinding)?
+            .GetValue(instance) as T;
+        
         #endregion
     }
 }
