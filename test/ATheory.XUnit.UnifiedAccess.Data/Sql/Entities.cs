@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ATheory.XUnit.UnifiedAccess.Data.Sql
@@ -34,5 +35,24 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Sql
         public int Id { get; set; }
 
         public string name { get; set; }
+    }
+
+    [Table("Books")]
+    public class Book
+    {
+        [Required]
+        public int Id { get; set; }
+
+        [MaxLength(255)]
+        public string Name { get; set; }
+
+        [Column("Published")]
+        public DateTime PublishedDate { get; set; }
+
+        [MaxLength(355)]
+        public string Description { get; set; }
+
+        public bool IsInPrint { get; set; }
+        public Int64 LongValue { get; set; }
     }
 }

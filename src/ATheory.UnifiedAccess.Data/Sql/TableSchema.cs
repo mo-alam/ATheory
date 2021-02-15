@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using ATheory.Util.Extensions;
 using ATheory.Util.Reflect;
 using static ATheory.UnifiedAccess.Data.Infrastructure.EntityUnifier;
 using static ATheory.UnifiedAccess.Data.Infrastructure.TypeCatalogue;
@@ -93,8 +94,9 @@ namespace ATheory.UnifiedAccess.Data.Sql
         public bool GetSchema<TEntity>()
         {
             var tableInfo = Reflector.GetTableInfo<TEntity>();
-            var schema = tableInfo.schema.IsEmptyStatement() ? string.Empty : $"{tableInfo.schema}.";
-            return GetSchema($"{schema}{tableInfo.tableName}");
+            var schema = tableInfo.schema.IsEmpty() ? string.Empty : $"{tableInfo.schema}.";
+            var table = tableInfo.tableName.OtherIfThisEmpty(typeof(TEntity).Name);
+            return GetSchema($"{schema}{table}");
         }
                 
         /// <summary>
@@ -138,7 +140,18 @@ namespace ATheory.UnifiedAccess.Data.Sql
         /// <typeparam name="T">Model</typeparam>
         /// <returns>DataTable instance that can be filled with data and then pushed into the datbase</returns>
         public DataTable GetInsertionTable<T>() => GetSchema<T>()? GetInsertionTable(TableName) : null;
-        
+
+        #endregion
+
+        #region Public static method
+
+        public static Dictionary<string, ColumnSchema> GetColumnSchemas(string table)
+        {
+            var schema = new TableSchema();
+            schema.GetSchema(table);
+            return schema.ColumnSchemas.ToDictionary(k => k.Name.ToLower(), v => v);
+        } 
+
         #endregion
     }
 }

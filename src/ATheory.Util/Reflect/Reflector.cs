@@ -64,17 +64,18 @@ namespace ATheory.Util.Reflect
         public static TResult InvokeMethod<TResult>(Type type, string name, object[] arguments) 
             => (TResult)type.GetMethod(name, AllBinding)?.Invoke(null, arguments);
 
-        public static Dictionary<string, string> GetProperties<TClass>()
+        public static Dictionary<string, string> GetProperties<TClass>(bool useCache = true)
             where TClass : class
         {
             var type = typeof(TClass);
-            if (cache.ContainsKey(type.Name))
+            if (useCache && cache.ContainsKey(type.Name))
                 return (Dictionary<string, string>)cache[type.Name];
 
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             if (properties == null) return null;
             var result = properties.ToDictionary(p => p.Name, p => GetColName(p));
-            cache.Add(type.Name, result);
+            if (useCache)
+                cache.Add(type.Name, result);
             return result;
         }
 
@@ -99,7 +100,7 @@ namespace ATheory.Util.Reflect
             var properties = typeof(TClass).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             return properties?.ToDictionary(p => makeKeyLower ? GetColName(p).ToLower() : GetColName(p), p => p);
         }
-
+        
         public static TEntity SetPropertyValues<TEntity>(Dictionary<string, PropertyInfo> properties, DbDataReader dataReader)
         {
             var entity = Activator.CreateInstance<TEntity>();
@@ -185,7 +186,16 @@ namespace ATheory.Util.Reflect
             .GetType()
             .GetField(varName, AllBinding)?
             .GetValue(instance) as T;
-        
+
+        public static T GetCustomAttribute<T>(PropertyInfo propertyInfo) where T : Attribute
+            => propertyInfo.GetCustomAttribute<T>();
+
+        public static Dictionary<string, (string Name, PropertyInfo Info)> GetEntityColumnInfo<TClass>()
+        {
+            var properties = typeof(TClass).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            return properties?.ToDictionary(p => GetColName(p).ToLower(), p => (GetColName(p), p));
+        }
+
         #endregion
     }
 }

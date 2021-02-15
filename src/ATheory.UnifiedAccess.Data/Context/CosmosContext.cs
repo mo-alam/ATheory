@@ -57,7 +57,7 @@ namespace ATheory.UnifiedAccess.Data.Context
             var dependencies = this.GetDbFacadeDependencies();
             return dependencies.CreateCosmosContainerIfNotExists(
                 store.container, 
-                store.Item2.GetFirstSpecialKey(TypeCatalogue.SpecialKey.PartitionKey));
+                store.keyStore.GetFirstSpecialKey(TypeCatalogue.SpecialKey.PartitionKey));
         }
 
         #endregion

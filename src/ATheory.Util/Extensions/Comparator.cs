@@ -19,7 +19,9 @@ namespace ATheory.Util.Extensions
             string.Equals(_, rhs, StringComparison.OrdinalIgnoreCase);
         public static bool EmptyOrAlike(this string _, string rhs) =>
             IsNullOrWhiteSpace(_) || string.Equals(_, rhs, StringComparison.OrdinalIgnoreCase);
-        public static bool IsEmpty(this string _) => IsNullOrWhiteSpace(_); 
+        public static bool IsEmpty(this string _) => IsNullOrWhiteSpace(_);
+        public static string OtherIfThisEmpty(this string _, string other) 
+            => IsNullOrWhiteSpace(_) ? other : _;
 
         #endregion
     }

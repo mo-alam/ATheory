@@ -48,7 +48,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         /// Returns the the list of registered entity info
         /// </summary>
         /// <returns>Registered entity types, Key = entity type, Value = (container, key-property names) </returns>
-        internal static IDictionary<Type, (string container, KeyTypeStore)> GetRegisteredTypes() => factory.RegisteredTypes;
+        internal static IDictionary<Type, (string container, KeyTypeStore keyStore)> GetRegisteredTypes() => factory.RegisteredTypes;
 
         #endregion
 

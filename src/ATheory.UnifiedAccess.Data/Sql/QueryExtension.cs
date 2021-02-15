@@ -7,13 +7,15 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using ATheory.UnifiedAccess.Data.Internal;
 using System.Data;
 using System.Reflection;
 
+using ATheory.UnifiedAccess.Data.Internal;
 using static ATheory.Util.Reflect.Reflector;
 using static ATheory.UnifiedAccess.Data.Infrastructure.EntityUnifier;
 using static ATheory.UnifiedAccess.Data.Infrastructure.TypeCatalogue;
+using ATheory.UnifiedAccess.Data.Core;
+using ATheory.Util.Extensions;
 
 namespace ATheory.UnifiedAccess.Data.Sql
 {
@@ -70,7 +72,7 @@ namespace ATheory.UnifiedAccess.Data.Sql
             params object[] parameters)
         {
             Error.Clear();
-            if (sql.IsEmptyStatement()) return null;
+            if (sql.IsEmpty()) return null;
             
             try
             {
@@ -139,7 +141,7 @@ namespace ATheory.UnifiedAccess.Data.Sql
         internal static bool Execute(string sql, params object[] parameters)
         {
             Error.Clear();
-            if (sql.IsEmptyStatement()) return false;
+            if (sql.IsEmpty()) return false;
 
             try
             {
@@ -191,6 +193,23 @@ namespace ATheory.UnifiedAccess.Data.Sql
         {
             using var context = GetContext();
             return context.ToCore().InsertBulk(dataTable);
+        }
+
+        internal static bool Execute(IUnifiedContext context, string sql, params object[] parameters)
+        {
+            Error.Clear();
+            if (sql.IsEmpty()) return false;
+
+            try
+            {
+                context.GetDbFacade().ExecuteSqlRaw(sql, parameters);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Error.Set(e, ErrorOrigin.SqlRawSource);
+                return false;
+            }
         }
 
         #endregion

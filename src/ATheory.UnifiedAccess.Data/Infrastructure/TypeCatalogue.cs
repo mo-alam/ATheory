@@ -38,8 +38,9 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
             SingleInstance      /* Creates one instance for a registration */
         }
 
-        public enum SpecialKey { 
-            PartitionKey       /* CosmosDB PartitionKey */
+        public enum SpecialKey {
+            PartitionKey,       /* PartitionKey = {CosmosDB, DynamoDB : not requred}*/
+            SortKey             /* SortKey = {DynamoDB : not requred}*/
         }
 
         // Name is exact copy of Amazon's RegionEndpoint

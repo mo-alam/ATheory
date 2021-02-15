@@ -30,5 +30,6 @@ namespace ATheory.Util.Extensions
         }
 
         public static bool IsEmpty(this string[] _) => _ == null || _.Length == 0 || _.All(IsNullOrWhiteSpace);
+        public static bool Exists(this string[] _, string match) => !_.IsEmpty() && _.Any(e => e.Alike(match));
     }
 }

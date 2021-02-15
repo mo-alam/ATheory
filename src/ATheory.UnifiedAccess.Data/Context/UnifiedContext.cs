@@ -61,7 +61,32 @@ namespace ATheory.UnifiedAccess.Data.Context
                 typeBuilder.HasKey(args.keyStore.Keys);
         }
 
-        protected virtual bool CreateEntitySchema<TEntity>() => true;
+        protected virtual bool CreateEntitySchema<TEntity>()
+        {
+            var (container, keyStore) = GetRegisteredTypes()[typeof(TEntity)];
+            var scripts = new Scripts().GenerateCreateTable<TEntity>(keyStore);
+            return QueryExtension.Execute(this, scripts.ToString());
+        }
+
+        bool UpdateEntitySchema<TEntity>() where TEntity : class
+        {
+            var (container, keyStore) = GetRegisteredTypes()[typeof(TEntity)];
+            var scripts = new Scripts().GenerateAlterTable<TEntity>(keyStore);
+            var result = true;
+
+            foreach (var script in scripts)
+            {
+                result &= QueryExtension.Execute(this, script);
+            }
+            return result;
+        }
+
+        protected virtual bool DeleteEntitySchema<TEntity>() where TEntity : class
+        {
+            var (container, keyStore) = GetRegisteredTypes()[typeof(TEntity)];
+            var scripts = new Scripts().GenerateDropTable<TEntity>(keyStore);
+            return QueryExtension.Execute(this, scripts.ToString());
+        }
 
         #endregion
 
@@ -160,14 +185,11 @@ namespace ATheory.UnifiedAccess.Data.Context
         public bool CreateSchema<TEntity>() where TEntity : class
             => CreateEntitySchema<TEntity>();
 
-        public bool UpdateSchema<TEntity>() where TEntity : class {
-            throw new NotImplementedException();
-        }
+        public bool UpdateSchema<TEntity>() where TEntity : class 
+            => UpdateEntitySchema<TEntity>();
 
         public bool DeleteSchema<TEntity>() where TEntity : class
-        {
-            throw new NotImplementedException();
-        }
+            => DeleteEntitySchema<TEntity>();
 
         #endregion
 

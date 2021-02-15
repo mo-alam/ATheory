@@ -8,8 +8,6 @@ namespace ATheory.UnifiedAccess.Data.Sql
 {
     public static class QueryParseHelper
     {
-        public static bool IsEmptyStatement(this string _) => IsNullOrWhiteSpace(_);
-
         public static string InsertTopLogicIfNeeded(this string _)
         {
             if (_.IndexOf("top", System.StringComparison.OrdinalIgnoreCase) > 0) return _;

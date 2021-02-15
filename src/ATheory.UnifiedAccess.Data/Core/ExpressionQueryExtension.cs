@@ -404,5 +404,12 @@ namespace ATheory.UnifiedAccess.Data.Core
             Exec(c => c.InsertBulk(sources));
 
         #endregion
+
+        #region Internal method
+
+        internal static TResult ExecFunction<TResult>(Func<IUnifiedContext, TResult> func)
+            => Exec(func);
+
+        #endregion
     }
 }

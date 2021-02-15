@@ -16,10 +16,13 @@ namespace ATheory.UnifiedAccess.Data.Sql
         public ColumnSchema(DataRow row)
         {
             Name = row.ToType<string>("ColumnName");
-            Index = row.ToType <int>("ColumnOrdinal");
+            Index = row.ToType<int>("ColumnOrdinal");
             DataType = ((Type)row["DataType"]).UnderlyingSystemType;
             IsAutoIncrement = row.ToType<bool>("IsAutoIncrement");
             IsIdentity = row.ToType<bool>("IsIdentity");
+            Length = row.ToType<int>("ColumnSize");
+            Precision = row.ToType<Int16>("NumericPrecision");
+            NumericScale = row.ToType<Int16>("NumericScale");
         }
 
         #endregion
@@ -31,8 +34,10 @@ namespace ATheory.UnifiedAccess.Data.Sql
         public Type DataType { get; set; }
         public bool IsAutoIncrement { get; set; }
         public bool IsIdentity { get; set; }
-        public long IncrementSeed { get; set; }    // Used with IsAutoIncrement = true        
-
+        public long IncrementSeed { get; set; }    // Used with IsAutoIncrement = true 
+        public int Length { get; set; }
+        public int Precision { get; set; }
+        public int NumericScale { get; set; }
         #endregion
 
         #region Public methods
