@@ -17,6 +17,7 @@ namespace ATheory.UnifiedAccess.Data.Context
     public class CosmosContext : UnifiedContext
     {
         #region Constructor
+
         public CosmosContext(Connection conn) : base(conn)
         {
         }
@@ -51,13 +52,25 @@ namespace ATheory.UnifiedAccess.Data.Context
 
         protected override bool CreateEntitySchema<TEntity>()
         {
-            if (!GetRegisteredTypes().ContainsKey(typeof(TEntity))) return false;
-            var store = GetRegisteredTypes()[typeof(TEntity)];
+            var (container, keyStore) = GetRegisteredTypes()[typeof(TEntity)];
 
             var dependencies = this.GetDbFacadeDependencies();
             return dependencies.CreateCosmosContainerIfNotExists(
-                store.container, 
-                store.keyStore.GetFirstSpecialKey(TypeCatalogue.SpecialKey.PartitionKey));
+                container, 
+                keyStore.GetFirstSpecialKey(TypeCatalogue.SpecialKey.PartitionKey));
+        }
+
+        // Not applicable
+        protected override bool UpdateEntitySchema<TEntity>() => true;
+
+        protected override bool DeleteEntitySchema<TEntity>()
+        {
+            var store = GetRegisteredTypes()[typeof(TEntity)];
+
+            var container = Database.GetCosmosClient().GetContainer(connection.Database, store.container);
+            if (container == null) return false;
+            var result = container.DeleteContainerAsync();
+            return result.Result.StatusCode == System.Net.HttpStatusCode.NoContent;
         }
 
         #endregion

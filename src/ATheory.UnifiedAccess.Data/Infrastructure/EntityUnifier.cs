@@ -24,7 +24,6 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         static IDictionary<string, (LifeCycle life, Func<IUnifiedContext> resolver, object state)> states = new Dictionary<string, (LifeCycle, Func<IUnifiedContext>, object)>(); 
         static readonly Gateway factory = new Gateway();
         static Func<IUnifiedContext> _resolver;
-        static string activeContext;
 
         #endregion
 
@@ -82,7 +81,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
                     _resolver = () => instance;
                     break;
             }
-            factory.ActiveContext = activeContext = contextName;
+            factory.ActiveContext = contextName;
             states.Add(contextName, (lifeCycle, _resolver, null));
             return factory;
         }
@@ -130,7 +129,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
             if (states.ContainsKey(contextName))
             {
                 _resolver = states[contextName].resolver;
-                factory.ActiveContext = activeContext = contextName;
+                factory.ActiveContext = contextName;
             }
             else {
                 throw new NotImplementedException();

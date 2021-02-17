@@ -31,9 +31,9 @@ namespace ATheory.UnifiedAccess.Data.Context
 
         #endregion
 
-        #region Private members
+        #region Protected members
 
-        Connection connection;
+        protected Connection connection;
         
         #endregion
 
@@ -68,7 +68,7 @@ namespace ATheory.UnifiedAccess.Data.Context
             return QueryExtension.Execute(this, scripts.ToString());
         }
 
-        bool UpdateEntitySchema<TEntity>() where TEntity : class
+        protected virtual bool UpdateEntitySchema<TEntity>() where TEntity : class
         {
             var (container, keyStore) = GetRegisteredTypes()[typeof(TEntity)];
             var scripts = new Scripts().GenerateAlterTable<TEntity>(keyStore);
@@ -183,13 +183,13 @@ namespace ATheory.UnifiedAccess.Data.Context
         }
 
         public bool CreateSchema<TEntity>() where TEntity : class
-            => CreateEntitySchema<TEntity>();
+            => ExecFunction(() => CreateEntitySchema<TEntity>());
 
         public bool UpdateSchema<TEntity>() where TEntity : class 
-            => UpdateEntitySchema<TEntity>();
+            => ExecFunction(() => UpdateEntitySchema<TEntity>());
 
         public bool DeleteSchema<TEntity>() where TEntity : class
-            => DeleteEntitySchema<TEntity>();
+            => ExecFunction(() => DeleteEntitySchema<TEntity>());
 
         #endregion
 

@@ -12,5 +12,13 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
             var result = query.CreateSchema<Book>();
             Assert.True(result);
         }
+
+        [Fact]
+        public void Delete_success()
+        {
+            var query = Prepare.SchemaQuery();
+            var result = query.DeleteSchema<Book>();
+            Assert.True(result);
+        }
     }
 }

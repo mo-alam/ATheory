@@ -52,7 +52,7 @@ namespace ATheory.UnifiedAccess.Data.Internal
 
         internal static IATrineDbFacadeDependencies GetDbFacadeDependencies(this IUnifiedContext _)
             => new ATrineDbFacadeDependencies(((UnifiedContext)_).GetService<IDatabaseFacadeDependencies>());
-        
+                
         #endregion
     }
 }
