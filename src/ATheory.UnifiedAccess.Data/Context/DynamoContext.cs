@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-
 using ATheory.UnifiedAccess.Data.Core;
 using ATheory.UnifiedAccess.Data.Helper;
 using ATheory.UnifiedAccess.Data.Infrastructure;
+using ATheory.UnifiedAccess.Data.Internal;
 using ATheory.UnifiedAccess.Data.Providers;
 using static ATheory.UnifiedAccess.Data.Infrastructure.EntityUnifier;
 
@@ -78,21 +78,12 @@ namespace ATheory.UnifiedAccess.Data.Context
 
         #endregion
 
-        #region Implement interface IContextAsync
+        #region Implement interface IUnifiedContext
 
         public IQueryable<TEntity> EntitySet<TEntity>() where TEntity : class
         {
-            Error.Clear();
-            try
-            {
-                var provider = new DynamoQueryProvider(database);
-                return provider.CreateQuery<TEntity>(GetName<TEntity>());
-            }
-            catch (Exception e)
-            {
-                Error.SetContext(e);
-                return null;
-            }
+            var provider = new DynamoQueryProvider(database);
+            return provider.CreateQuery<TEntity>(GetName<TEntity>());
         }
 
         public bool Insert<TEntity>(TEntity entity) where TEntity : class 
@@ -117,19 +108,13 @@ namespace ATheory.UnifiedAccess.Data.Context
         public void Dispose() { }
 
         public bool CreateSchema<TEntity>() where TEntity : class
-        {
-            throw new NotImplementedException();
-        }
+            => new DynamoAuxiliary(database).CreateSchema<TEntity>();
 
         public bool UpdateSchema<TEntity>() where TEntity : class
-        {
-            throw new NotImplementedException();
-        }
+            => new DynamoAuxiliary(database).UpdateSchema<TEntity>();
 
         public bool DeleteSchema<TEntity>() where TEntity : class
-        {
-            throw new NotImplementedException();
-        }
+            => new DynamoAuxiliary(database).DeleteSchema<TEntity>();
 
         #endregion
 

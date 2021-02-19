@@ -13,6 +13,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         internal string Container;
         internal string[] Keys;
         internal IDictionary<SpecialKey, List<string>> SpecialKeys;
+        internal bool HasSpecialKeys => SpecialKeys != null && SpecialKeys.Count > 0;
 
         internal void AddSpecialKey(SpecialKey key, string keyName) {
             if (SpecialKeys == null) SpecialKeys = new Dictionary<SpecialKey, List<string>>();

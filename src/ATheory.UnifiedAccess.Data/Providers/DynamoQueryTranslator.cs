@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using static ATheory.UnifiedAccess.Data.Providers.ProviderEnums;
 using static ATheory.UnifiedAccess.Data.Providers.LinqHelper;
+using static ATheory.UnifiedAccess.Data.Internal.DynamoDbDependencies;
 
 namespace ATheory.UnifiedAccess.Data.Providers
 {
@@ -28,32 +29,6 @@ namespace ATheory.UnifiedAccess.Data.Providers
         StringBuilder builder;
         string lastVar;
         bool memberVariable;
-
-        #endregion
-        
-        #region Private methods
-
-        DynamoType GetDynamoType(object value)
-        {
-            if (value == null) return DynamoType.Null;
-
-            switch (Type.GetTypeCode(value.GetType()))
-            {
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Single:
-                case TypeCode.Double:
-                case TypeCode.Decimal:
-                    return DynamoType.Number;
-                case TypeCode.Object:
-                    return DynamoType.List;
-                default: return DynamoType.Text;
-            }
-        } 
 
         #endregion
 
@@ -152,14 +127,6 @@ namespace ATheory.UnifiedAccess.Data.Providers
         #endregion
 
         #region Constants/Enums/Maps
-
-        enum DynamoType
-        {
-            Null,
-            Number,
-            Text,
-            List
-        }
 
         Dictionary<ConditionalOperator, string> operators = new Dictionary<ConditionalOperator, string> {
             { ConditionalOperator.And, "AND" },
