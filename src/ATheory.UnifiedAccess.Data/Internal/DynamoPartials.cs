@@ -5,6 +5,7 @@
 
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using ATheory.Util.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,7 +13,7 @@ using static ATheory.UnifiedAccess.Data.Infrastructure.TypeCatalogue;
 
 namespace ATheory.UnifiedAccess.Data.Internal
 {
-    internal static class DynamoDbDependencies
+    internal static class DynamoPartials
     {
         #region Types/Constants/Enums
 
@@ -71,6 +72,29 @@ namespace ATheory.UnifiedAccess.Data.Internal
                     SpecialKey.PartitionKey => KeyType.HASH,
                     _ => KeyType.RANGE,
                 });
+        }
+
+        internal static AttributeValue CreateAttributeValue(PropertyInfo info, object value)
+        {
+            return GetDynamoType(info.PropertyType) switch
+            {
+                DynamoType.Null => new AttributeValue { NULL = true },
+                DynamoType.Number => new AttributeValue { N = value.ToString() },
+                DynamoType.Text => new AttributeValue { S = value.ToString() },
+                DynamoType.List => new AttributeValue { L = new List<AttributeValue>() },
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        //Need to specify this default behaviour
+        //Action DELETE and ADD not utilised yet
+        internal static AttributeValueUpdate CreateAttributeValueUpdate(PropertyInfo info, object value)
+        {
+            return new AttributeValueUpdate()
+            {
+                Action = AttributeAction.PUT,
+                Value = CreateAttributeValue(info, value)
+            };
         }
 
         #endregion

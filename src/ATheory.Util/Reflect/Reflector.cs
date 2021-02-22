@@ -92,8 +92,24 @@ namespace ATheory.Util.Reflect
             return result;
         }
 
+        public static Dictionary<string, (PropertyInfo info, object value)> GetPropertyInfoValue(Type type, object dataObject, bool useCache = false)
+        {
+            if (useCache && cache.ContainsKey(type.Name))
+                return (Dictionary<string, (PropertyInfo info, object value)>)cache[type.Name];
+
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (properties == null) return null;
+            var result = properties.ToDictionary(p => p.Name, p => (p, p.GetValue(dataObject)));
+            if (useCache)
+                cache.Add(type.Name, result);
+            return result;
+        }
+
         public static Dictionary<string, PropertyInfo> GetPropertyInfo<TClass>(bool useCache = true)
             => GetPropertyInfo(typeof(TClass), useCache);
+
+        public static Dictionary<string, (PropertyInfo info, object value)> GetPropertyInfoValue<TClass>(TClass dataObject, bool useCache = false)
+            => GetPropertyInfoValue(typeof(TClass), dataObject, useCache);
 
         public static Dictionary<string, PropertyInfo> GetPropertyColumnInfo<TClass>(bool makeKeyLower = false)
         {

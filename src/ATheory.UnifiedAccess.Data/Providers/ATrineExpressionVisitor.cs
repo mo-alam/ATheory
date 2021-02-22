@@ -121,7 +121,8 @@ namespace ATheory.UnifiedAccess.Data.Providers
             TranslateOperator(operatorType, node);
             var exp = Visit(node.Right);
             translator.BlockEnd();
-            return exp;
+            //return exp;
+            return node;
         }
 
         protected override Expression VisitUnary(UnaryExpression node)

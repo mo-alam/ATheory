@@ -8,7 +8,7 @@ namespace ATheory.UnifiedAccess.Data.Core
     /// Interface to access functions related to data fetch asynchronously
     /// </summary>
     /// <typeparam name="TSource">Type of Model</typeparam>
-    public interface IReadQueryAsync<TSource> : IQueryService
+    public interface IQueryAsync<TSource> : IQueryService
         where TSource : class, new()
     {
     }

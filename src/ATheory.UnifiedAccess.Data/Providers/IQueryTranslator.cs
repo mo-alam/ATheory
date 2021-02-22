@@ -2,6 +2,8 @@
  * Copyright (c) 2020, Mohammad Jahangir Alam
  * Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
  */
+using ATheory.UnifiedAccess.Data.Common;
+using System.Collections.Generic;
 using static ATheory.UnifiedAccess.Data.Providers.ProviderEnums;
 
 namespace ATheory.UnifiedAccess.Data.Providers
@@ -25,6 +27,11 @@ namespace ATheory.UnifiedAccess.Data.Providers
         /// The resultant object translated by the implementer.
         /// </summary>
         object TranslatedObject { get; }
+
+        /// <summary>
+        /// Members used in the query along with variable(if defined) and values.
+        /// </summary>
+        Dictionary<string, VarValueTuple> Members { get; }
 
         /// <summary>
         /// Start of a statement (conditional) block

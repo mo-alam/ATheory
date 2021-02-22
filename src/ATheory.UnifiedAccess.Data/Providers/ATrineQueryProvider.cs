@@ -142,6 +142,17 @@ namespace ATheory.UnifiedAccess.Data.Providers
         /// <returns>Resultant object/value</returns>
         public object ExecuteExpression(Expression expression) => ExecExpression(expression.EvaluatePartially());
 
+        /// <summary>
+        /// Translates and gets the translator
+        /// </summary>
+        /// <param name="expression">Linq expression that'll be translated</param>
+        /// <returns>The translator</returns>
+        public IQueryTranslator GetTranslator(Expression expression)
+        {
+            CreatVisitorAndVisit(expression);
+            return queryTranslator;
+        }
+
         #endregion
     }
 }

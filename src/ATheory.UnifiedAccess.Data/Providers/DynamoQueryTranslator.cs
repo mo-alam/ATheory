@@ -8,14 +8,15 @@ using System.Collections.Generic;
 using System.Text;
 using static ATheory.UnifiedAccess.Data.Providers.ProviderEnums;
 using static ATheory.UnifiedAccess.Data.Providers.LinqHelper;
-using static ATheory.UnifiedAccess.Data.Internal.DynamoDbDependencies;
+using static ATheory.UnifiedAccess.Data.Internal.DynamoPartials;
+using ATheory.UnifiedAccess.Data.Common;
 
 namespace ATheory.UnifiedAccess.Data.Providers
 {
     /// <summary>
     /// Query translator for DynamoDB
     /// </summary>
-    public class DynamoQueryTranslator : IQueryTranslator 
+    public class DynamoQueryTranslator : IQueryTranslator
     {
         #region Constructor
 
@@ -29,6 +30,26 @@ namespace ATheory.UnifiedAccess.Data.Providers
         StringBuilder builder;
         string lastVar;
         bool memberVariable;
+        Dictionary<string, VarValueTuple> memberVarMap;
+        string lastMember;
+
+        #endregion
+
+        #region Private methods
+
+        void AddMemberMap(string memberName, string varName)
+        {
+            if (!memberVarMap.ContainsKey(memberName))
+                memberVarMap.Add(memberName, new VarValueTuple(varName, null));
+            lastMember = memberName;
+        }
+
+        void SetMemberValue(object value, string memberName = null)
+        {
+            var name = memberName ?? lastMember;
+            if (!memberVarMap.ContainsKey(name)) return;
+            memberVarMap[name].Value = value;
+        }
 
         #endregion
 
@@ -39,6 +60,7 @@ namespace ATheory.UnifiedAccess.Data.Providers
         public LinqMethod SingleValuedFunction { get; set; }
 
         public object TranslatedObject => request;
+        public Dictionary<string, VarValueTuple> Members => memberVarMap;
 
         public void BlockStart()
         {
@@ -59,6 +81,7 @@ namespace ATheory.UnifiedAccess.Data.Providers
             builder.Append(name);
             lastVar = $":v_{name}";
             memberVariable = true;
+            AddMemberMap(name, lastVar);
         }
 
         public void TranslateValue(object value)
@@ -79,6 +102,7 @@ namespace ATheory.UnifiedAccess.Data.Providers
 
             request.ExpressionAttributeValues.Add(lastVar, attributeValue);
             lastVar = string.Empty;
+            SetMemberValue(value);
         }
 
         public void TranslateConditional(ConditionalOperator type)
@@ -109,6 +133,7 @@ namespace ATheory.UnifiedAccess.Data.Providers
             builder = new StringBuilder();
             lastVar = string.Empty;
             memberVariable = false;
+            memberVarMap = new Dictionary<string, VarValueTuple>();
         }
 
         public void Finalise()

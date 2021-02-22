@@ -9,7 +9,7 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Dynamo
         public void GetFirst_not_null_value_match()
         {
             var query = Prepare.GetBooks();
-            var result = query.GetFirst(a => a.PartKey == 1 /*&& a.Id == "3"*/);
+            var result = query.GetFirst(a => a.PartKey == 1 && a.Id == "3");
 
             Assert.NotNull(result);
             //Assert.Equal(3, result.Index);

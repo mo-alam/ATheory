@@ -16,6 +16,7 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Dynamo
             EntityUnifier.Factory()
                 .UseDefaultContext(Connection.CreateDynamo(config.Key1, config.Key2, TypeCatalogue.AmazonRegion.USEast2))
                 .Register<Author>(collectionName: "Authors")
+                .SpecialKey("Id", TypeCatalogue.SpecialKey.PartitionKey)
                 .Register<Books>(collectionName: "Books")
                 .SpecialKey("PartKey", TypeCatalogue.SpecialKey.PartitionKey)
                 .Register<Novel>(collectionName: "Novel")

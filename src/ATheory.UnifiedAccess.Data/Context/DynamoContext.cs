@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using ATheory.UnifiedAccess.Data.Core;
 using ATheory.UnifiedAccess.Data.Helper;
 using ATheory.UnifiedAccess.Data.Infrastructure;
@@ -42,29 +41,12 @@ namespace ATheory.UnifiedAccess.Data.Context
         #region Private methods
 
         string GetName<TEntity>() => GetRegisteredTypes()[typeof(TEntity)].container;
-
-        async Task Exec<TEntity>(Func<Table, Task> func) where TEntity : class
+        bool ExecAuxilary<TEntity>(Func<DynamoAuxiliary, (string container, KeyTypeStore keyStore), bool> func)
         {
-            Error.Clear();
-            try
-            {
-                await func(Table.LoadTable(database, GetName<TEntity>()));
-            }
-            catch (Exception e)
-            {
-                Error.SetContext(e);
-            }
+            var auxilary = new DynamoAuxiliary(database);
+            var store = GetRegisteredTypes()[typeof(TEntity)];
+            return func(auxilary, store);
         }
-
-        //async Task InsertAsyncAnother<TEntity>(TEntity entity) where TEntity : class
-        //{
-        //    var book = new Document();
-        //    book["Id"] = "5";
-        //    book["Name"] = "Arish";
-        //    book["Description"] = "description";
-        //    book["Index"] = 5;
-        //    await Exec<TEntity>(t => t.PutItemAsync(book));
-        //}
 
         #endregion
 
@@ -87,22 +69,23 @@ namespace ATheory.UnifiedAccess.Data.Context
         }
 
         public bool Insert<TEntity>(TEntity entity) where TEntity : class 
-            => throw new NotImplementedException();
+            => ExecAuxilary<TEntity>((a, b) => a.InsertItem(entity, b.container));
 
-        public bool Update<TEntity>(TEntity entity, params Expression<Func<TEntity, object>>[] properties) where TEntity : class
-            => throw new NotImplementedException();
+        //Note: pass the properties that are new for this entity
+        public bool Update<TEntity>(TEntity entity, params Expression<Func<TEntity, object>>[] properties) where TEntity : class 
+            => ExecAuxilary<TEntity>((a, b) => a.UpdateItem(entity, b.container, b.keyStore, properties));
 
-        public bool Update<TEntity>(Expression<Func<TEntity, bool>> predicate, TEntity entity) where TEntity : class
-            => throw new NotImplementedException();
+        public bool Update<TEntity>(Expression<Func<TEntity, bool>> predicate, TEntity entity) where TEntity : class 
+            => ExecAuxilary<TEntity>((a, b) => a.UpdateItem(entity, b.container, b.keyStore, predicate));
 
         public bool Delete<TEntity>(TEntity entity) where TEntity : class 
-            => throw new NotImplementedException();
+            => ExecAuxilary<TEntity>((a, b) => a.DeleteItem(entity, b.container, b.keyStore));
 
-        public bool Delete<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
-            => throw new NotImplementedException();
+        public bool Delete<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class 
+            => ExecAuxilary<TEntity>((a, b) => a.DeleteItem(b.container, predicate));
 
         public bool InsertBulk<TEntity>(IList<TEntity> entities) where TEntity : class
-            => throw new NotImplementedException();
+            => ExecAuxilary<TEntity>((a, b) => a.InsertBulk(b.container, entities));
 
         // Infrastructure implementation; nothing to dispose
         public void Dispose() { }

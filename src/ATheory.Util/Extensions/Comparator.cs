@@ -22,6 +22,29 @@ namespace ATheory.Util.Extensions
         public static bool IsEmpty(this string _) => IsNullOrWhiteSpace(_);
         public static string OtherIfThisEmpty(this string _, string other) 
             => IsNullOrWhiteSpace(_) ? other : _;
+        public static bool IsDefault(this object _)
+        {
+            if (_ == null) return true;
+            return Type.GetTypeCode(_.GetType()) switch
+            {
+                TypeCode.Boolean => Equals(_, default(bool)),
+                TypeCode.Char => Equals(_, default(char)),
+                TypeCode.SByte => Equals(_, default(sbyte)),
+                TypeCode.Byte => Equals(_, default(byte)),
+                TypeCode.Int16 => Equals(_, default(Int16)),
+                TypeCode.UInt16 => Equals(_, default(UInt16)),
+                TypeCode.Int32 => Equals(_, default(int)),
+                TypeCode.UInt32 => Equals(_, default(uint)),
+                TypeCode.Int64 => Equals(_, default(Int64)),
+                TypeCode.UInt64 => Equals(_, default(UInt64)),
+                TypeCode.Single => Equals(_, default(Single)),
+                TypeCode.Double => Equals(_, default(double)),
+                TypeCode.Decimal => Equals(_, default(decimal)),
+                TypeCode.DateTime => Equals(_, default(DateTime)),
+                TypeCode.String => Equals(_, default(string)),
+                _ => false
+            };
+        }
 
         #endregion
     }
