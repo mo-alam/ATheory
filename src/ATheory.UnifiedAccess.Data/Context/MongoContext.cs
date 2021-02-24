@@ -53,19 +53,8 @@ namespace ATheory.UnifiedAccess.Data.Context
 
         #region Implement interface IUnifiedContext
 
-        public IQueryable<TEntity> EntitySet<TEntity>() where TEntity : class
-        {
-            Error.Clear();
-            try
-            {
-                return database.GetCollection<TEntity>(GetName<TEntity>()).AsQueryable();
-            }
-            catch (Exception e)
-            {
-                Error.SetContext(e);
-                return null;
-            }
-        }
+        public IQueryable<TEntity> EntitySet<TEntity>() where TEntity : class => 
+            Exec<TEntity, IQueryable<TEntity>>(c => c.AsQueryable());
 
         public bool Insert<TEntity>(TEntity entity) where TEntity : class =>
             Exec<TEntity, bool>(c => { c.InsertOne(entity); return true; });
@@ -91,17 +80,21 @@ namespace ATheory.UnifiedAccess.Data.Context
 
         public bool CreateSchema<TEntity>() where TEntity : class
         {
-            throw new NotImplementedException();
+            database.CreateCollection(GetName<TEntity>());
+            return true;
         }
 
         public bool UpdateSchema<TEntity>() where TEntity : class
         {
+            //database.RenameCollection(GetName<TEntity>());
+            //return true;
             throw new NotImplementedException();
         }
 
         public bool DeleteSchema<TEntity>() where TEntity : class
         {
-            throw new NotImplementedException();
+            database.DropCollection(GetName<TEntity>());
+            return true;
         }
 
         #endregion

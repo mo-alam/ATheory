@@ -40,7 +40,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
             return this;
         }
 
-        //Theoretically it is possible to have same collection name and type in different collection. But for now, not considering
+        //Theoretically it is possible to have same collection name and type in different container. But for now, not considering
         public IGateway Register<TEntity>(
             string collectionName,
             string container = null)
