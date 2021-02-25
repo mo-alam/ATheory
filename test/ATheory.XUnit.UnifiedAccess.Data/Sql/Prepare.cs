@@ -1,5 +1,7 @@
 ﻿using ATheory.UnifiedAccess.Data.Core;
 using ATheory.UnifiedAccess.Data.Infrastructure;
+using ATheory.Util.Extensions;
+using ATheory.XUnit.UnifiedAccess.Data.Common;
 using System;
 
 namespace ATheory.XUnit.UnifiedAccess.Data.Sql
@@ -10,14 +12,12 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Sql
 
         public static bool Prepared => _preped;
 
-        static Prepare() {
+        static Prepare()
+        {
+            var config = new JsonShell<ConnConfig>().Load(@"C:\Dev\Configs\sql.json");
             EntityUnifier.Factory()
                 /* Use defualt context */
-                .UseDefaultContext(Connection.CreateSqlServer(
-                    "LAPTOP-PKM3LA5L\\SQLEXPRESS", 
-                    "test-db", 
-                    "sa", 
-                    "dumb@admin"))
+                .UseDefaultContext(Connection.CreateSqlServer(config.Key1, config.Key2, config.Key3, config.Password))
                 .Register<Author>()
                 .Register<Book>(b => b.Id);
             _preped = true;

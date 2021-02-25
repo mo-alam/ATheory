@@ -8,6 +8,16 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Mongo
     public class ExprTestWrite
     {
         [Fact]
+        public void Insert_success()
+        {
+            var query = Prepare.SetQuery();
+            var result = query.Insert(
+                new Author { Name = "Isaac Asimov", Description = "Sci-fi", Index = 4 });
+
+            Assert.True(result);
+        }
+
+        [Fact]
         public void Insert_Delete_success()
         {
             var query = Prepare.SetQuery();

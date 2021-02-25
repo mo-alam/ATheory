@@ -14,6 +14,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         public string Error { get; internal set; }
         public ErrorOrigin Originator { get; internal set; }
         public Exception Exception { get; internal set; }
+        public bool HasError => !Error.IsEmpty();
 
         internal void Clear()
         {

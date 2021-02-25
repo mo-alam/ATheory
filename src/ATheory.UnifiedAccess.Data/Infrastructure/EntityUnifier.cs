@@ -4,9 +4,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using ATheory.UnifiedAccess.Data.Context;
 using ATheory.UnifiedAccess.Data.Core;
+using ATheory.Util.Extensions;
 using static ATheory.UnifiedAccess.Data.Infrastructure.TypeCatalogue;
 
 namespace ATheory.UnifiedAccess.Data.Infrastructure
@@ -29,20 +31,34 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
 
         #region Private methods
 
-        static string GetDefaultName<T>() => $"{typeof(T).Name}-default";
+        static string GetDefaultName<T>(Connection connection)
+        { 
+            var name = $"{typeof(T).Name}-default";
+            if (states.ContainsKey(name)) {
+                name = $"{typeof(T).Name}-{connection.Provider}-default";
+                //No more checks, if still exist the consumer should now provide the context name.
+            }
+            return name;
+        }
 
         #endregion
 
         #region Internal properties
 
         internal static ErrorPack Error { get; } = new ErrorPack();
-        internal static IUnifiedContext GetContext() => _resolver();
+
         internal static UnifierOption Option { get; private set; } = new UnifierOption();
 
         #endregion
 
         #region Internal methods
-        
+
+        /// <summary>
+        /// Gets the context/context resolver dependending on the LifeCycle.
+        /// </summary>
+        /// <returns>Instance of the context that the calling entity belongs to.</returns>
+        internal static IUnifiedContext GetContext() => _resolver();
+
         /// <summary>
         /// Returns the the list of registered entity info
         /// </summary>
@@ -100,16 +116,16 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
             switch (connection.Provider)
             {
                 case StorageProvider.Cosmos:
-                    _.RegisterContext(() => new CosmosContext(connection), contextName ?? GetDefaultName<CosmosContext>());
+                    _.RegisterContext(() => new CosmosContext(connection), contextName ?? GetDefaultName<CosmosContext>(connection));
                     break;
                 case StorageProvider.Mongo:
-                    _.RegisterContext(() => new MongoContext(connection), contextName ?? GetDefaultName<MongoContext>(), LifeCycle.SingleInstance);
+                    _.RegisterContext(() => new MongoContext(connection), contextName ?? GetDefaultName<MongoContext>(connection), LifeCycle.SingleInstance);
                     break;
                 case StorageProvider.DynamoDb:
-                    _.RegisterContext(() => new DynamoContext(connection), contextName ?? GetDefaultName<DynamoContext>(), LifeCycle.SingleInstance);
+                    _.RegisterContext(() => new DynamoContext(connection), contextName ?? GetDefaultName<DynamoContext>(connection), LifeCycle.SingleInstance);
                     break;
                 default:
-                    _.RegisterContext(() => new ATrineSqlContext(connection), contextName ?? GetDefaultName<ATrineSqlContext>()); /* Defaults are: SqlServer, SqlLite, MySql */
+                    _.RegisterContext(() => new ATrineSqlContext(connection), contextName ?? GetDefaultName<ATrineSqlContext>(connection)); /* Defaults are: SqlServer, SqlLite, MySql */
                     break;
             };
 
@@ -126,14 +142,12 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
             this IGateway _,
             string contextName)
         {
-            if (states.ContainsKey(contextName))
-            {
-                _resolver = states[contextName].resolver;
-                factory.ActiveContext = contextName;
-            }
-            else {
+            if (contextName.IsExact(factory.ActiveContext)) return factory;
+            if (!states.ContainsKey(contextName))
                 throw new NotImplementedException();
-            }
+
+             _resolver = states[contextName].resolver;
+            factory.ActiveContext = contextName;
             return factory;
         }
 
@@ -173,24 +187,23 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         public static ErrorPack GetError(this IGateway _) => Error;
 
         /// <summary>
-        /// Gets the query service interface. Supported interfaces are:
-        /// 1. IReadQuery<TSource>
-        /// 2. IWriteQuery<TSource>
-        /// 3. IMasterDetailQuery<TSource>
-        /// 4. ISqlQuery
-        /// </summary>
-        /// <typeparam name="TQuery">One of the supported interfaces</typeparam>
-        /// <param name="_">Factory instance</param>
-        /// <returns>Query service interface</returns>
-        public static TQuery GetQueryService<TQuery>(this IGateway _)
-            where TQuery : IQueryService
-            => (TQuery)(IQueryService)null;
-
-        /// <summary>
         /// Provides option to set various settings regarding memory usage; mostly internal cache.
         /// </summary>
         /// <param name="option">Options to set</param>
         public static void SetOptions(UnifierOption option) => Option = option;
+
+        /// <summary>
+        /// Call it to get names of all the registered contexts
+        /// </summary>
+        /// <returns>List of context names</returns>
+        public static List<string> GetContextNames(this IGateway _) => states.Keys.ToList();
+
+        /// <summary>
+        /// Get the context name that is at the moment active.
+        /// </summary>
+        /// <param name="_">The gateway</param>
+        /// <returns>Current context name</returns>
+        public static string GetActiveContext(this IGateway _) => factory.ActiveContext;
 
         #endregion
     }
