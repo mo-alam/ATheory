@@ -82,20 +82,20 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
             => GetQueryService<ISqlQuery>(_);
 
         /// <summary>
-        /// Creates a bridge (tunnel) beween the current context (as left) and the right context
+        /// Creates a bridge (tunnel) between the current context (as left) and the right context
         /// </summary>
         /// <param name="_">The gateway</param>
-        /// <param name="rightContext">Conext name to establish a data tunnel</param>
+        /// <param name="rightContext">Context name to establish a data tunnel</param>
         /// <returns>The interface instance</returns>
         public static IBridge Bridge(this IGateway _, string rightContext)
             => Bridge(_, _.GetActiveContext(), rightContext);
 
         /// <summary>
-        /// Creates a bridge (tunnel) beween the left context and the right context
+        /// Creates a bridge (tunnel) between the left context and the right context
         /// </summary>
         /// <param name="_">The gateway</param>
-        /// <param name="leftContext"></param>
-        /// <param name="rightContext"></param>
+        /// <param name="leftContext">First context name to establish the data tunnel with</param>
+        /// <param name="rightContext">Second context name to establish the data tunnel with </param>
         /// <returns></returns>
         public static IBridge Bridge(this IGateway _, string leftContext, string rightContext)
         {

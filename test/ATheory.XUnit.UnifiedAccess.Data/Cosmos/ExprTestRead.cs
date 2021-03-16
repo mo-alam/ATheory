@@ -1,4 +1,5 @@
 using ATheory.UnifiedAccess.Data.Core;
+using System.Linq;
 using Xunit;
 
 namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
@@ -10,7 +11,6 @@ namespace ATheory.XUnit.UnifiedAccess.Data.Cosmos
         {
             var query = Prepare.GetQuery();
             var result = query.GetFirst(a => a.Id == 88);
-            
             Assert.NotNull(result);
             Assert.Equal(88, result.Id);
         }

@@ -80,6 +80,8 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         /// </summary>
         /// <param name="_">Extension</param>
         /// <param name="projection">Projection to DbContext implementing the IUnifiedContext</param>
+        /// <param name="contextName">Context name or identifier</param>
+        /// <param name="lifeCycle">Life cycle type</param>
         /// <returns>The factory</returns>
         public static IGateway RegisterContext(
             this IGateway _,
@@ -107,6 +109,7 @@ namespace ATheory.UnifiedAccess.Data.Infrastructure
         /// </summary>
         /// <param name="_">Extension</param>
         /// <param name="connection">The connection object</param>
+        /// <param name="contextName">Context name or identifier</param>
         /// <returns>The factory</returns>
         public static IGateway UseDefaultContext(
             this IGateway _,

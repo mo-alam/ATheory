@@ -358,7 +358,7 @@ namespace ATheory.UnifiedAccess.Data.Core
             Exec(c => c.Update(entity, properties));
 
         /// <summary>
-        /// Updates the entity. Not to be used for MongoDB
+        /// Updates the entity. 
         /// </summary>
         /// <param name="predicate">A function for a condition to update elements.</param>
         /// <param name="entity">Entity to be updated</param>
@@ -395,7 +395,7 @@ namespace ATheory.UnifiedAccess.Data.Core
         /// <summary>
         /// Inserts in bulk, the entire data table
         /// </summary>
-        /// <param name="list">List of TSource elements that'll be inserted in to the table</param>
+        /// <param name="sources">List of TSource elements that'll be inserted in to the table</param>
         /// <returns>Success or failure</returns>
         public static bool InsertBulk<TSource>(
             this IWriteQuery<TSource> _,
