@@ -3,9 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Mohammad Alam</Authors>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/mo-alam/ATheory.git</PackageProjectUrl>
+    <Description>The SDK provides a single set of fluent APIs to access data from different data providers (sql, no-sql) seamlessly as well as exposes functionality to add, update or delete tables/schemas. No need to create or manage DbConext or drivers. Many providers can be used at the same time and the underlying system will manage the infrastructure. Data from one store can be inserted into another store through a data tunnel without any complexities.  Above all its simple and super easy to use.</Description>
+    <Copyright>Copyright (c) Mohammad J Alam 2020</Copyright>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,6 +33,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ATheory.Util\ATheory.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
