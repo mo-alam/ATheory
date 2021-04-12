@@ -9,6 +9,7 @@
     <Description>This utility library provides utility functions</Description>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/mo-alam/ATheory.git</PackageProjectUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -6,9 +6,13 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/mo-alam/ATheory.git</PackageProjectUrl>
-    <Description>The SDK provides a single set of fluent APIs to access data from different data providers (sql, no-sql) seamlessly as well as exposes functionality to add, update or delete tables/schemas. No need to create or manage DbConext or drivers. Many providers can be used at the same time and the underlying system will manage the infrastructure. Data from one store can be inserted into another store through a data tunnel without any complexities.  Above all its simple and super easy to use.</Description>
+    <Description>The SDK provides a single set of fluent APIs to access data from different data providers (SqlServer, SqlLite, Cosmos Db, MongoDb, DynamoDB, MySql) seamlessly without any need to create or manage DbConext/drivers (infrastructure). Data from one provider (eg. SQL db ) can be inserted into another provider (DynamoDB) through a data tunnel with a few lines of code without any complexities. Exposes many other functionalities such as add, update or delete tables/schemas. Above all its simple and super easy to use.
+Refs:
+https://github.com/mo-alam/ATheory/blob/master/UnifiedDataAccess%20API%20reference.pdf
+</Description>
     <Copyright>Copyright (c) Mohammad J Alam 2020</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
